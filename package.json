@@ -15,16 +15,16 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "ESWJiraTreeView",
+          "id": "vs-sidebar-view",
           "title": "ESW-Jira",
           "icon": "resources/icons/jira-explorer-icon.svg"
         }
       ]
     },
     "views": {
-      "ESWJiraTreeView": [
+      "vs-sidebar-view": [
         {
-          "id": "jira-projects",
+          "id": "vs-sidebar-view",
           "name": "Projects"
         },
         {

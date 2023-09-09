@@ -4,7 +4,8 @@ import * as vscode from "vscode";
 import { JiraConnector } from "./components/JiraConnector";
 import { JiraTreeProvider } from "./components/SideMenu";
 import { jiraConfig } from "./components/Configure";
-import { jiraPanel } from "./components/WebviewPanel";
+import { JiraProjectsProvider } from "./components/WebviewPanel";
+// import { jiraPanel } from "./components/WebviewPanel";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -28,7 +29,13 @@ export function activate(context: vscode.ExtensionContext) {
     );
     context.subscriptions.push(disposable);
   }
-  jiraPanel.webview.postMessage("Hello world");
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      "vs-sidebar-view",
+      new JiraProjectsProvider(context)
+    )
+  );
+  // jiraPanel.webview.postMessage("Hello world");
 }
 
 // This method is called when your extension is deactivated
