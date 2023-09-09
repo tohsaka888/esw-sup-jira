@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { JiraConnector } from "./components/JiraConnector";
 import { JiraTreeProvider } from "./components/SideMenu";
 import { jiraConfig } from "./components/Configure";
-import { JiraProjectsProvider } from "./components/WebviewPanel";
+import { JiraProjectsPanel } from "./components/WebviewPanel";
 // import { jiraPanel } from "./components/WebviewPanel";
 
 // This method is called when your extension is activated
@@ -31,8 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
   }
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      "vs-sidebar-view",
-      new JiraProjectsProvider(context)
+      "jira-projects",
+      new JiraProjectsPanel(context)
     )
   );
   // jiraPanel.webview.postMessage("Hello world");
