@@ -15,16 +15,17 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "vs-sidebar-view",
+          "id": "ESWJiraView",
           "title": "ESW-Jira",
           "icon": "resources/icons/jira-explorer-icon.svg"
         }
       ]
     },
     "views": {
-      "vs-sidebar-view": [
+      "ESWJiraView": [
         {
-          "id": "vs-sidebar-view",
+          "type": "webview",
+          "id": "jira-projects",
           "name": "Projects"
         },
         {
@@ -41,45 +42,40 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run package",
-    "compile": "tsup src/extension.ts --dts --minify --external=vscode",
-    "watch": "npm run compile -- --watch",
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p tsconfig.test.json --outDir out",
-    "web:build": "cd ./esw-jira-client && tsc && vite build",
-    "web:watch": "cd ./esw-jira-client && tsc && vite build --watch",
-    "watch-tests": "tsc -p tsconfig.test.json -w --outDir out",
-    "pretest": "pnpm run compile-tests",
+    "build:view": "webpack --config webpack.view.config.js",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p -w . --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js",
-    "build": "cd ./esw-jira-client && tsc && vite build"
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@swc/cli": "^0.1.62",
-    "@swc/core": "^1.3.83",
-    "@types/mocha": "^10.0.1",
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
-    "@types/vscode": "^1.82.0",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "@vitejs/plugin-react-swc": "^3.3.2",
-    "@vscode/test-electron": "^2.3.4",
-    "eslint": "^8.49.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "glob": "^10.3.4",
-    "mocha": "^10.2.0",
-    "ts-loader": "^9.4.4",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.9"
+    "@types/glob": "8.1.0",
+    "@types/mocha": "10.0.1",
+    "@types/node": "20.6.0",
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7",
+    "@types/vscode": "1.82.0",
+    "@vscode/test-electron": "2.3.4",
+    "autoprefixer": "10.4.15",
+    "classnames": "2.3.2",
+    "css-loader": "6.8.1",
+    "eslint": "8.49.0",
+    "glob": "10.3.4",
+    "mini-css-extract-plugin": "2.7.6",
+    "mocha": "10.2.0",
+    "ts-loader": "9.4.4",
+    "typescript": "5.2.2",
+    "webpack": "5.88.2",
+    "webpack-cli": "5.1.4"
   },
   "dependencies": {
-    "jira.js": "^2.19.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tsup": "^7.2.0",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "jira.js": "2.19.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   }
 }
