@@ -1,54 +1,70 @@
-import * as vscode from "vscode";
-import type {
-  CancellationToken,
-  WebviewView,
-  WebviewViewResolveContext,
-} from "vscode";
-import { readFileSync } from "fs";
+// import * as vscode from "vscode";
+// import { jiraConfig } from "./Configure";
+// import { JiraConnector } from "./JiraConnector";
 
-export class JiraProjectsPanel implements vscode.WebviewViewProvider {
-  context: vscode.ExtensionContext;
-  contents: { [key: string]: any } | null = null;
-  _view?: vscode.WebviewView;
+// export class JiraProjectsPanel implements vscode.WebviewViewProvider {
+//   static _view?: vscode.WebviewView;
+//   _doc?: vscode.TextDocument;
 
-  constructor(context: vscode.ExtensionContext) {
-    this.context = context;
-  }
+//   constructor(private readonly _extensionUri?: vscode.Uri) {}
 
-  async resolveWebviewView(
-    webviewView: WebviewView,
-    context: WebviewViewResolveContext,
-    token: CancellationToken
-  ) {
-    webviewView.webview.options = {
-      enableScripts: true,
-      localResourceRoots: [this.context.extensionUri],
-    };
-    webviewView.webview.html = this.getWebviewContent(webviewView.webview);
-    this._view = webviewView;
-  }
+//   public resolveWebviewView(webviewView: vscode.WebviewView) {
+//     JiraProjectsPanel._view = webviewView;
 
-  public revive(panel: vscode.WebviewView) {
-    this._view = panel;
-  }
+//     webviewView.webview.options = {
+//       // 在 webview 允许脚本
+//       enableScripts: true,
+//       localResourceRoots: [this._extensionUri!],
+//     };
 
-  private getWebviewContent(webview: vscode.Webview) {
-    const extensionUri = this.context.extensionUri;
-    const staticUri = vscode.Uri.joinPath(extensionUri, "dist/web/");
+//     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    let webviewContent = readFileSync(
-      vscode.Uri.joinPath(extensionUri, "dist/web/index.html").fsPath,
-      {
-        encoding: "utf-8",
-      }
-    );
+//     webviewView.onDidChangeVisibility(async (e: any) => {
+//         const { email, baseUrl, apiToken } = await jiraConfig();
+//         const jiraConnector = JiraConnector.getInstance({
+//           email,
+//           apiToken,
+//           baseUrl,
+//         });
+//         const response = await jiraConnector.getAllProjects();
+//         const projects = await response.values;
+//         webviewView.webview.postMessage({ type: "projects", values: projects });
+//     });
+//   }
 
-    webviewContent = webviewContent.replace(
-      "BASE_URL",
-      webview.asWebviewUri(staticUri).toString()
-    );
+//   public revive(panel: vscode.WebviewView) {
+//     JiraProjectsPanel._view = panel;
+//   }
 
-    console.log(webviewContent);
-    return webviewContent;
-  }
-}
+//   private _getHtmlForWebview(webview: vscode.Webview) {
+//     const scriptUri = webview.asWebviewUri(
+//       vscode.Uri.joinPath(this._extensionUri!, "build", "static/js/main.js")
+//     );
+//     const styleMainUri = webview.asWebviewUri(
+//       vscode.Uri.joinPath(this._extensionUri!, "build", "main.css")
+//     );
+
+//     return `<!DOCTYPE html>
+// 			<html lang="en">
+// 			<head>
+// 				<meta charset="UTF-8">
+// 				<!--
+// 					Use a content security policy to only allow loading images from https or from our extension directory,
+// 					and only allow scripts that have a specific nonce.
+//         -->
+//         <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource};">
+// 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+// 				<link href="${styleMainUri}" rel="stylesheet">
+        
+//         <script>
+//           const tsvscode = acquireVsCodeApi();
+//           const apiBaseUrl = 'https://cnodejs.org/'
+//         </script>
+// 			</head>
+//       <body>
+//       <div id="root"></div>
+//       <script src="${scriptUri}"></script>
+// 			</body>
+// 			</html>`;
+//   }
+// }

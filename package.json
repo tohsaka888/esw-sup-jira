@@ -24,7 +24,6 @@
     "views": {
       "ESWJiraView": [
         {
-          "type": "webview",
           "id": "jira-projects",
           "name": "Projects"
         },
@@ -49,9 +48,10 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p -w . --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile",
-    "test": "node out/src/test/runTest.js"
+    "test": "node out/src/test/runTest.js --delay"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.6",
     "@types/glob": "8.1.0",
     "@types/mocha": "10.0.1",
     "@types/node": "20.6.0",
@@ -62,7 +62,6 @@
     "autoprefixer": "10.4.15",
     "classnames": "2.3.2",
     "css-loader": "6.8.1",
-    "eslint": "8.49.0",
     "glob": "10.3.4",
     "mini-css-extract-plugin": "2.7.6",
     "mocha": "10.2.0",
@@ -72,6 +71,7 @@
     "webpack-cli": "5.1.4"
   },
   "dependencies": {
+    "chai": "^4.3.8",
     "jira.js": "2.19.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"

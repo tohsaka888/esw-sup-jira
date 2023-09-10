@@ -1,3 +1,4 @@
+import { SiderTreeItem } from "src/types/SiderTree";
 import * as vscode from "vscode";
 
 export class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
@@ -6,14 +7,23 @@ export class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
   readonly onDidChangeTreeData: vscode.Event<JiraTreeItem | undefined> =
     this._onDidChangeTreeData.event;
 
+  private treeItems: JiraTreeItem[] = [];
   getTreeItem(element: JiraTreeItem): vscode.TreeItem {
     return element;
   }
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire(
-      new JiraTreeItem("Node 2", vscode.TreeItemCollapsibleState.None)
-    );
+  refresh(treeItems: SiderTreeItem[]): void {
+    this.treeItems = [];
+    treeItems.forEach((treeItem) => {
+      const element = new JiraTreeItem(
+        treeItem.title,
+        vscode.TreeItemCollapsibleState[treeItem.type],
+        treeItem.description,
+        treeItem.contextValue
+      );
+      this.treeItems.push(element);
+      this._onDidChangeTreeData.fire(element);
+    });
   }
 
   // 实现 dispose 方法
@@ -23,16 +33,7 @@ export class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
 
   getChildren(element?: JiraTreeItem): Thenable<JiraTreeItem[]> {
     // 返回树形视图的子节点
-    return Promise.resolve([
-      new JiraTreeItem(
-        "Node 1",
-        vscode.TreeItemCollapsibleState.None,
-        "ceshi",
-        "test"
-      ),
-      new JiraTreeItem("Node 2", vscode.TreeItemCollapsibleState.None),
-      new JiraTreeItem("Node 3", vscode.TreeItemCollapsibleState.None),
-    ]);
+    return Promise.resolve(this.treeItems);
   }
 }
 
@@ -47,6 +48,5 @@ class JiraTreeItem extends vscode.TreeItem {
     this.description = description;
     this.contextValue = contextValue;
   }
-
   tooltip = this.label;
 }
