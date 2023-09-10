@@ -1,8 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { JiraTreeProvider } from "./components/SideMenu";
-import { JiraConnector } from "./components/JiraConnector";
+import { jiraTreeProvider } from "./components/SideMenu";
+import { jiraConnector } from "./components/JiraConnector";
 import { Project } from "jira.js/out/version3/models";
 // import { jiraPanel } from "./components/WebviewPanel";
 
@@ -12,10 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "esw-sup-jira" is now active!');
-  const jiraProjectPanel = new JiraTreeProvider();
-  const jiraConnector = JiraConnector.getInstance();
   context.subscriptions.push(
-    vscode.window.registerTreeDataProvider("jira-projects", jiraProjectPanel)
+    vscode.window.registerTreeDataProvider("jira-projects", jiraTreeProvider)
   );
 
   // The command has been defined in the package.json file
@@ -26,15 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     "esw-sup-jira.login",
     async () => {
       await jiraConnector.jiraConfig();
-      const response = await jiraConnector.getAllProjects();
-      const projects = (response?.values || []) as Project[];
-      jiraProjectPanel.refresh(
-        projects.map((project) => ({
-          ...project,
-          title: project.name,
-          type: "Collapsed",
-        }))
-      );
+      jiraTreeProvider.refresh();
     }
   );
   context.subscriptions.push(disposable);

@@ -2,11 +2,11 @@ import { JiraConnectorProps } from "../types/JiraConnector";
 import { Version3Client } from "jira.js";
 import * as vscode from "vscode";
 
-export class JiraConnector {
-  private static instance: JiraConnector;
-  static client?: Version3Client;
+class JiraConnector {
+  private static instance: JiraConnector | null = null;
+  private static client?: Version3Client | null = null;
 
-  constructor() {}
+  private constructor() {}
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -64,3 +64,5 @@ export class JiraConnector {
 
   // TODO: 获取用户参与的某个项目中的某个状态的事务
 }
+
+export const jiraConnector = JiraConnector.getInstance();
