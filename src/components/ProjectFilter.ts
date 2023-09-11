@@ -51,7 +51,7 @@ class ProjectFilter {
             key: status.id,
           })) || []
         );
-        return { status: selectedStatus?.name };
+        return { status: selectedStatus?.id };
       } else if (this.filterMode.key === 2) {
       } else {
       }
