@@ -38,7 +38,11 @@ export function activate(context: vscode.ExtensionContext) {
       "esw-sup-jira.project.filter",
       async (props: JiraTreeItem) => {
         vscode.window.showWarningMessage(JSON.stringify(props));
-        await projectFilter.projectFilterSelector(props._id.toString());
+        const result = await projectFilter.projectFilterSelector(
+          props._id.toString()
+        );
+        props._status = result?.status;
+        vscode.window.showWarningMessage(props._status || '');
         jiraTreeProvider.refresh();
       }
     )

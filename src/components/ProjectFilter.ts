@@ -51,7 +51,7 @@ class ProjectFilter {
             key: status.id,
           })) || []
         );
-        vscode.window.showWarningMessage(JSON.stringify(selectedStatus));
+        return { status: selectedStatus?.name };
       } else if (this.filterMode.key === 2) {
       } else {
       }

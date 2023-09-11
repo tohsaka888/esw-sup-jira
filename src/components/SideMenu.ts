@@ -14,6 +14,8 @@ export class JiraTreeItem extends vscode.TreeItem {
   type: "project" | "issue" | "subtask";
   _id: string | number;
   subtasks?: Issue[];
+  _status?: string;
+  _assignee?: string;
   constructor(
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -65,6 +67,7 @@ class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
       if (element.type === "project") {
         const response = await jiraConnector.getProjectIssues({
           projectNameOrId: element._id.toString(),
+          status: element._status,
         });
         return Promise.resolve(
           response?.issues?.map(
