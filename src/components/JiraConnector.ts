@@ -6,7 +6,7 @@ class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -68,15 +68,29 @@ class JiraConnector {
     }
   }
 
-  //校验登录状态
-  loginAuthenticated() {
-    if (!!JiraConnector.client?.serverInfo) {
-      vscode.window.showErrorMessage("Connection refused,Please try again!");
+
+
+/**
+ * The function `loginAuthenticated` checks if the user is logged in to Jira and returns `true` if they
+ * are, otherwise it shows an error message.
+ * @returns a boolean value. If the serverTime is not null, it will return true. Otherwise, if there is
+ * an error, it will display an error message and not return anything.
+ */
+  async loginAuthenticated() {
+    try {
+      (await JiraConnector.client?.serverInfo.getServerInfo()!).serverTime !== null
+      return true;
+    } catch (error) {
+      vscode.window.showErrorMessage("User not login,Please login first");
     }
-    return !!JiraConnector.client?.serverInfo;
   }
-  // TODO: 获取登录用户参与的所有项目
-  // 获取用户相关的所有项目
+
+  /**
+   * The function `getAllProjects` is an asynchronous function that attempts to retrieve all projects
+   * from a Jira connector and displays an error message if it fails.
+   * @returns The getAllProjects function is returning the result of the
+   * JiraConnector.client.projects.searchProjects() method call.
+   */
   async getAllProjects() {
     try {
       return await JiraConnector.client?.projects.searchProjects();
@@ -85,7 +99,15 @@ class JiraConnector {
     }
   }
 
-  // TODO: 获取项目所有状态
+
+  /**
+   * The function `getAllStatuses` retrieves all statuses for a given project in Jira using the
+   * JiraConnector client.
+   * @param {string} projectIdOrKey - A string representing the ID or key of the project for which you
+   * want to retrieve all statuses.
+   * @returns The getAllStatuses function is returning the result of calling the getAllStatuses method of
+   * the JiraConnector client with the projectIdOrKey parameter.
+   */
   async getAllStatuses(projectIdOrKey: string) {
     try {
       return await JiraConnector.client?.projects.getAllStatuses(
@@ -96,7 +118,15 @@ class JiraConnector {
     }
   }
 
-  // TODO: 获取用户参与的某个项目中的某个状态的事务
+
+  /**
+   * The function `getProjectIssues` is an asynchronous function that retrieves issues from Jira based on
+   * a project name or ID and hierarchy level.
+   * @param {string} projectNameOrId - A string representing the name or ID of the project for which you
+   * want to retrieve the issues.
+   * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
+   * is a promise that resolves to the search results for issues in the specified project.
+   */
   async getProjectIssues(projectNameOrId: string) {
     try {
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
