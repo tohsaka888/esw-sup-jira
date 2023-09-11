@@ -70,12 +70,12 @@ class JiraConnector {
 
 
 
-/**
- * The function `loginAuthenticated` checks if the user is logged in to Jira and returns `true` if they
- * are, otherwise it shows an error message.
- * @returns a boolean value. If the serverTime is not null, it will return true. Otherwise, if there is
- * an error, it will display an error message and not return anything.
- */
+  /**
+   * The function `loginAuthenticated` checks if the user is logged in to Jira and returns `true` if they
+   * are, otherwise it shows an error message.
+   * @returns a boolean value. If the serverTime is not null, it will return true. Otherwise, if there is
+   * an error, it will display an error message and not return anything.
+   */
   async loginAuthenticated() {
     try {
       (await JiraConnector.client?.serverInfo.getServerInfo()!).serverTime !== null
@@ -108,7 +108,7 @@ class JiraConnector {
    * @returns The getAllStatuses function is returning the result of calling the getAllStatuses method of
    * the JiraConnector client with the projectIdOrKey parameter.
    */
-  async getAllStatuses(projectIdOrKey: string) {
+  async getProjectStatuses(projectIdOrKey: string) {
     try {
       return await JiraConnector.client?.projects.getAllStatuses(
         projectIdOrKey
@@ -127,15 +127,18 @@ class JiraConnector {
    * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
    * is a promise that resolves to the search results for issues in the specified project.
    */
-  async getProjectIssues(projectNameOrId: string) {
+  async getProjectIssues(projectNameOrId: string,status:string) {
+    const statusJql = !status? '' : `and status ${status}`;
     try {
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
-        jql: `project=${projectNameOrId} and hierarchyLevel=0`,
+        jql: `project=${projectNameOrId} and hierarchyLevel=0 and ${statusJql}`,
       });
     } catch (error) {
       vscode.window.showErrorMessage("Get issues fail,Pleace try again!");
     }
   }
+
+
 }
 
 export const jiraConnector = JiraConnector.getInstance();
