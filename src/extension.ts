@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { jiraTreeProvider } from "./components/SideMenu";
+import { JiraTreeItem, jiraTreeProvider } from "./components/SideMenu";
 import { jiraConnector } from "./components/JiraConnector";
 import { projectFilter } from "./components/ProjectFilter";
 // import { jiraPanel } from "./components/WebviewPanel";
@@ -36,9 +36,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "esw-sup-jira.project.filter",
-      async (props) => {
+      async (props: JiraTreeItem) => {
         vscode.window.showWarningMessage(JSON.stringify(props));
-        await projectFilter.projectFilterSelector();
+        const result = await projectFilter.projectFilterSelector(
+          props._id.toString()
+        );
+        props._status = result?.status;
+        vscode.window.showWarningMessage(props._status || '');
         jiraTreeProvider.refresh();
       }
     )

@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 import { jiraConnector } from "./JiraConnector";
+import { StatusDetails } from "jira.js/out/version3/models";
+import { removeDuplicates } from "../utils/removeDuplicates";
 class ProjectFilter {
   private filterMode?: { label: string; description: string; key: number };
   private static instance: ProjectFilter;
@@ -10,7 +12,7 @@ class ProjectFilter {
     }
     return ProjectFilter.instance;
   }
-  async projectFilterSelector() {
+  async projectFilterSelector(projectIdorKey: string) {
     this.filterMode = await vscode.window.showQuickPick(
       [
         {
@@ -36,7 +38,20 @@ class ProjectFilter {
     );
     if (this.filterMode) {
       if (this.filterMode.key === 1) {
-        const statusList =  await jiraConnector
+        const statusList = await jiraConnector.getProjectStatuses(
+          projectIdorKey
+        );
+        const selectedStatus = await vscode.window.showQuickPick(
+          removeDuplicates<StatusDetails>(
+            statusList?.flatMap((status) => status.statuses) || [],
+            "name"
+          ).map((status) => ({
+            ...status,
+            label: status.name!,
+            key: status.id,
+          })) || []
+        );
+        return { status: selectedStatus?.id };
       } else if (this.filterMode.key === 2) {
       } else {
       }
