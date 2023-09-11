@@ -1,12 +1,12 @@
 import { Version3Client } from "jira.js";
 import * as vscode from "vscode";
-import { SearchProjects } from "jira.js/out/version3/parameters";
+import { FindAssignableUsers, SearchProjects } from "jira.js/out/version3/parameters";
 
 class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -118,25 +118,35 @@ class JiraConnector {
     }
   }
 
+
+
   /**
-   * The function `getProjectIssues` is an asynchronous function that retrieves issues from Jira based on
-   * a project name or ID and hierarchy level.
-   * @param {string} projectNameOrId - A string representing the name or ID of the project for which you
-   * want to retrieve the issues.
+   * The function `getProjectIssues` retrieves issues from Jira based on the project name or ID and an
+   * optional status.
+   * @param  - - `projectNameOrId`: The name or ID of the project for which you want to retrieve the
+   * issues.
    * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
-   * is a promise that resolves to the search results for issues in the specified project.
+   * is a Promise that resolves to the search results for issues in a project.
    */
   async getProjectIssues({ projectNameOrId, status }: { projectNameOrId: string, status?: string }) {
     try {
-      const statusJql = status ? `and status=${status}` : "";
+      const statusJql = status ? ` and status=${status} ` : "";
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
-        jql: `project=${projectNameOrId} and hierarchyLevel=0 ${statusJql}`,
+        jql: `project=${projectNameOrId}${statusJql}and hierarchyLevel=0`,
       });
     } catch (error) {
       vscode.window.showErrorMessage("Get issues fail,Pleace try again!");
     }
   }
 
+
+  async getUsers({ project }: FindAssignableUsers) {
+    try {
+      return await JiraConnector.client?.userSearch.findAssignableUsers({ project });
+    } catch (error) {
+
+    }
+  }
 
 }
 
