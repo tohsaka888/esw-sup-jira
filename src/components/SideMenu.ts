@@ -10,7 +10,7 @@ type OtherProps = {
   subtasks?: Issue[];
 };
 
-class JiraTreeItem extends vscode.TreeItem {
+export class JiraTreeItem extends vscode.TreeItem {
   type: "project" | "issue" | "subtask";
   _id: string | number;
   subtasks?: Issue[];
