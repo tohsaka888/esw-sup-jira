@@ -127,8 +127,8 @@ class JiraConnector {
    * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
    * is a promise that resolves to the search results for issues in the specified project.
    */
-  async getProjectIssues(projectNameOrId: string,status:string) {
-    const statusJql = !status? '' : `and status ${status}`;
+  async getProjectIssues({ projectNameOrId, status }: { projectNameOrId: string, status?: string }) {
+    const statusJql = !status ? '' : `and status ${status}`;
     try {
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
         jql: `project=${projectNameOrId} and hierarchyLevel=0 and ${statusJql}`,
