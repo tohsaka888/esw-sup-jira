@@ -130,9 +130,10 @@ class JiraConnector {
    */
   async getProjectIssues({ projectNameOrId, status }: { projectNameOrId: string, status?: string }) {
     try {
-      const statusJql = status ? ` and status=${status} ` : "";
+      const statusJql = status ? ` and status=${status}` : "";
+      console.log(statusJql);
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
-        jql: `project=${projectNameOrId}${statusJql}and hierarchyLevel=0`,
+        jql: `project=${projectNameOrId}${statusJql} and hierarchyLevel=0`,
       });
     } catch (error) {
       vscode.window.showErrorMessage("Get issues fail,Pleace try again!");
