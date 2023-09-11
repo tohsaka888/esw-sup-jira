@@ -6,7 +6,7 @@ class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -78,7 +78,8 @@ class JiraConnector {
    */
   async loginAuthenticated() {
     try {
-      (await JiraConnector.client?.serverInfo.getServerInfo()!).serverTime !== null
+      (await JiraConnector.client?.serverInfo.getServerInfo()!).serverTime !==
+        null;
       return true;
     } catch (error) {
       vscode.window.showErrorMessage("User not login,Please login first");
@@ -93,12 +94,11 @@ class JiraConnector {
    */
   async getAllProjects() {
     try {
-      return await JiraConnector.client?.projects.searchProjects();
+      return await JiraConnector.client?.projects.searchProjects({});
     } catch (error) {
       vscode.window.showErrorMessage("GetProjects fail,Pleace try again!");
     }
   }
-
 
   /**
    * The function `getAllStatuses` retrieves all statuses for a given project in Jira using the
@@ -118,7 +118,6 @@ class JiraConnector {
     }
   }
 
-
   /**
    * The function `getProjectIssues` is an asynchronous function that retrieves issues from Jira based on
    * a project name or ID and hierarchy level.
@@ -130,6 +129,7 @@ class JiraConnector {
   async getProjectIssues({ projectNameOrId, status }: { projectNameOrId: string, status?: string }) {
     const statusJql = !status ? '' : `and status ${status}`;
     try {
+      const statusJql = status ? `and status=${status}` : "";
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
         jql: `project=${projectNameOrId} and hierarchyLevel=0 and ${statusJql}`,
       });

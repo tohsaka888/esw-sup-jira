@@ -63,9 +63,9 @@ class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
     if (element) {
       // 如果有父节点，则异步获取其子节点
       if (element.type === "project") {
-        const response = await jiraConnector.getProjectIssues(
-          element._id as string
-        );
+        const response = await jiraConnector.getProjectIssues({
+          projectNameOrId: element._id.toString(),
+        });
         return Promise.resolve(
           response?.issues?.map(
             (treeItem) =>

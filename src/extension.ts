@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import { jiraTreeProvider } from "./components/SideMenu";
 import { jiraConnector } from "./components/JiraConnector";
+import { projectFilter } from "./components/ProjectFilter";
 // import { jiraPanel } from "./components/WebviewPanel";
 
 // This method is called when your extension is activated
@@ -31,6 +32,16 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("esw-sup-jira.project.refresh", () => {
       jiraTreeProvider.refresh();
     })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "esw-sup-jira.project.filter",
+      async (props) => {
+        vscode.window.showWarningMessage(JSON.stringify(props));
+        await projectFilter.projectFilterSelector();
+        jiraTreeProvider.refresh();
+      }
+    )
   );
 }
 

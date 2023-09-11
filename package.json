@@ -49,6 +49,16 @@
           "light": "resources/icons/light/refresh.svg",
           "dark": "resources/icons/dark/refresh.svg"
         }
+      },
+      {
+        "command": "esw-sup-jira.project.filter",
+        "title": "ESW Jira: Filter Project List",
+        "shortTitle": "Filter",
+        "category": "project",
+        "icon": {
+          "light": "resources/icons/light/filter.png",
+          "dark": "resources/icons/dark/filter.png"
+        }
       }
     ],
     "menus": {
@@ -57,6 +67,13 @@
           "command": "esw-sup-jira.project.refresh",
           "when": "view == jira-projects",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "esw-sup-jira.project.filter",
+          "when": "view == jira-projects && viewItem == project",
+          "group": "inline"
         }
       ]
     }
