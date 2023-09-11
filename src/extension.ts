@@ -3,7 +3,6 @@
 import * as vscode from "vscode";
 import { jiraTreeProvider } from "./components/SideMenu";
 import { jiraConnector } from "./components/JiraConnector";
-import { Project } from "jira.js/out/version3/models";
 // import { jiraPanel } from "./components/WebviewPanel";
 
 // This method is called when your extension is activated
@@ -12,22 +11,27 @@ export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "esw-sup-jira" is now active!');
-  context.subscriptions.push(
-    vscode.window.registerTreeDataProvider("jira-projects", jiraTreeProvider)
+  const projectsView = vscode.window.registerTreeDataProvider(
+    "jira-projects",
+    jiraTreeProvider
   );
+  context.subscriptions.push(projectsView);
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   // Register Commands
-  const disposable = vscode.commands.registerCommand(
-    "esw-sup-jira.login",
-    async () => {
+  context.subscriptions.push(
+    vscode.commands.registerCommand("esw-sup-jira.login", async () => {
       await jiraConnector.jiraConfig();
       jiraTreeProvider.refresh();
-    }
+    })
   );
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(
+    vscode.commands.registerCommand("esw-sup-jira.project.refresh", () => {
+      jiraTreeProvider.refresh();
+    })
+  );
 }
 
 // This method is called when your extension is deactivated

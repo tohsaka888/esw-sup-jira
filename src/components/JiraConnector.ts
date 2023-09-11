@@ -6,7 +6,7 @@ class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -15,10 +15,10 @@ class JiraConnector {
     return JiraConnector.instance;
   }
   /**
-   * 
-   * @param email 
-   * @param apiToken 
-   * @param url 
+   *
+   * @param email
+   * @param apiToken
+   * @param url
    * @testing
    * @private
    */
@@ -68,7 +68,6 @@ class JiraConnector {
     }
   }
 
-
   //校验登录状态
   loginAuthenticated() {
     if (!!JiraConnector.client?.serverInfo) {
@@ -89,18 +88,22 @@ class JiraConnector {
   // TODO: 获取项目所有状态
   async getAllStatuses(projectIdOrKey: string) {
     try {
-      return await JiraConnector.client?.projects.getAllStatuses(projectIdOrKey);
+      return await JiraConnector.client?.projects.getAllStatuses(
+        projectIdOrKey
+      );
     } catch (error) {
-      vscode.window.showErrorMessage("GetStatuses fail,Pleace try again!");
+      vscode.window.showErrorMessage("Get statuses fail,Pleace try again!");
     }
   }
 
   // TODO: 获取用户参与的某个项目中的某个状态的事务
   async getProjectIssues(projectNameOrId: string) {
     try {
-      return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({ jql: `project=${projectNameOrId}` });
+      return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
+        jql: `project=${projectNameOrId} and hierarchyLevel=0`,
+      });
     } catch (error) {
-      vscode.window.showErrorMessage("GetIssues fail,Pleace try again!");
+      vscode.window.showErrorMessage("Get issues fail,Pleace try again!");
     }
   }
 }

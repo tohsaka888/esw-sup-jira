@@ -25,7 +25,8 @@
       "ESWJiraView": [
         {
           "id": "jira-projects",
-          "name": "Projects"
+          "name": "Projects",
+          "contextualTitle": "jira-projects"
         },
         {
           "id": "jira-my",
@@ -36,9 +37,29 @@
     "commands": [
       {
         "command": "esw-sup-jira.login",
-        "title": "ESW Jira: Login"
+        "title": "ESW Jira: Login",
+        "category": "ESW Jira"
+      },
+      {
+        "command": "esw-sup-jira.project.refresh",
+        "title": "ESW Jira: Refresh Project List",
+        "shortTitle": "Refresh",
+        "category": "ESW Jira",
+        "icon": {
+          "light": "resources/icons/light/refresh.svg",
+          "dark": "resources/icons/dark/refresh.svg"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "esw-sup-jira.project.refresh",
+          "when": "view == jira-projects",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
