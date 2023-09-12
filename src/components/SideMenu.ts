@@ -52,8 +52,8 @@ class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
     return element;
   }
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire(undefined);
+  refresh(element?: JiraTreeItem): void {
+    this._onDidChangeTreeData.fire(element);
   }
 
   // 实现 dispose 方法
@@ -63,6 +63,9 @@ class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
 
   async getChildren(element?: JiraTreeItem): Promise<JiraTreeItem[]> {
     if (element) {
+      if (element.label === "ESW-SUP") {
+        vscode.window.showWarningMessage(`${element._status}`);
+      }
       // 如果有父节点，则异步获取其子节点
       if (element.type === "project") {
         const response = await jiraConnector.getProjectIssues({

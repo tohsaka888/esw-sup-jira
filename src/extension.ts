@@ -42,8 +42,8 @@ export function activate(context: vscode.ExtensionContext) {
           props._id.toString()
         );
         props._status = result?.status;
-        vscode.window.showWarningMessage(props._status || '');
-        jiraTreeProvider.refresh();
+        vscode.window.showWarningMessage(props._status || "");
+        jiraTreeProvider.refresh(props);
       }
     )
   );
