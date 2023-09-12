@@ -70,28 +70,29 @@ class JiraConnector {
 
 
 
-  /**
-   * The function `loginAuthenticated` checks if the user is logged in to Jira and returns `true` if they
-   * are, otherwise it shows an error message.
-   * @returns a boolean value. If the serverTime is not null, it will return true. Otherwise, if there is
-   * an error, it will display an error message and not return anything.
-   */
+
+/**
+ * The function `loginAuthenticated` checks if the user is logged in to Jira and returns `true` if they
+ * are, otherwise it shows an error message.
+ * @returns If the server time is not null, then true is being returned.
+ */
   async loginAuthenticated() {
     try {
-      (await JiraConnector.client?.serverInfo.getServerInfo()!).serverTime !==
-        null;
-      return true;
+      if((await JiraConnector.client?.serverInfo.getServerInfo()!).serverTime !==null){
+        return true;
+      }
     } catch (error) {
       vscode.window.showErrorMessage("User not login,Please login first");
     }
   }
 
-  /**
-   * The function `getAllProjects` is an asynchronous function that attempts to retrieve all projects
-   * from a Jira connector and displays an error message if it fails.
-   * @returns The getAllProjects function is returning the result of the
-   * JiraConnector.client.projects.searchProjects() method call.
-   */
+
+/**
+ * The above function is an asynchronous function that retrieves all projects from a Jira server using
+ * the JiraConnector client.
+ * @returns The getAllProjects function is returning the result of the
+ * JiraConnector.client.projects.searchProjects() method call.
+ */
   async getAllProjects() {
     try {
       return await JiraConnector.client?.projects.searchProjects({});
@@ -100,14 +101,15 @@ class JiraConnector {
     }
   }
 
-  /**
-   * The function `getAllStatuses` retrieves all statuses for a given project in Jira using the
-   * JiraConnector client.
-   * @param {string} projectIdOrKey - A string representing the ID or key of the project for which you
-   * want to retrieve all statuses.
-   * @returns The getAllStatuses function is returning the result of calling the getAllStatuses method of
-   * the JiraConnector client with the projectIdOrKey parameter.
-   */
+
+/**
+ * The function `getProjectStatuses` is an asynchronous function that retrieves the statuses of a
+ * project in Jira using the JiraConnector client.
+ * @param {string} projectIdOrKey - A string representing the ID or key of the project for which you
+ * want to retrieve the statuses.
+ * @returns the result of the JiraConnector.client?.projects.getAllStatuses(projectIdOrKey) method
+ * call.
+ */
   async getProjectStatuses(projectIdOrKey: string) {
     try {
       return await JiraConnector.client?.projects.getAllStatuses(
@@ -120,14 +122,15 @@ class JiraConnector {
 
 
 
-  /**
-   * The function `getProjectIssues` retrieves issues from Jira based on the project name or ID and an
-   * optional status.
-   * @param  - - `projectNameOrId`: The name or ID of the project for which you want to retrieve the
-   * issues.
-   * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
-   * is a Promise that resolves to the search results for issues in a project.
-   */
+
+/**
+ * The function `getProjectIssues` retrieves issues from Jira based on the project name or ID and an
+ * optional status.
+ * @param  - - `projectNameOrId`: The name or ID of the project for which you want to retrieve issues.
+ * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
+ * is a Promise that resolves to the search results for issues in the specified project and with the
+ * specified status.
+ */
   async getProjectIssues({ projectNameOrId, status }: { projectNameOrId: string, status?: string }) {
     try {
       const statusJql = status ? ` and status=${status}` : "";
@@ -141,14 +144,20 @@ class JiraConnector {
   }
 
 
-  async getUsers({ project }: FindAssignableUsers) {
+/**
+ * The function `getProjectUsers` is an asynchronous function that retrieves assignable users for a
+ * given project using the JiraConnector client.
+ * @param {FindAssignableUsers}  - - `project`: The project for which to find assignable users.
+ * @returns the result of the JiraConnector.client?.userSearch.findAssignableUsers({ project }) method
+ * call.
+ */
+  async getProjectUsers({ project }: FindAssignableUsers) {
     try {
       return await JiraConnector.client?.userSearch.findAssignableUsers({ project });
     } catch (error) {
-
+      vscode.window.showErrorMessage("Get users fail,Pleace try again!");
     }
   }
-
 }
 
 export const jiraConnector = JiraConnector.getInstance();
