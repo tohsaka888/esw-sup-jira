@@ -131,12 +131,13 @@ class JiraConnector {
  * is a Promise that resolves to the search results for issues in the specified project and with the
  * specified status.
  */
-  async getProjectIssues({ projectNameOrId, status }: { projectNameOrId: string, status?: string }) {
+  async getProjectIssues({ projectNameOrId, status ,userFullNameOrId}: { projectNameOrId: string, status?: string ,userFullNameOrId?:string}) {
     try {
       const statusJql = status ? ` and status=${status}` : "";
+      const userJql = status ? ` and user=${userFullNameOrId}` : "";
       console.log(statusJql);
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
-        jql: `project=${projectNameOrId}${statusJql} and hierarchyLevel=0`,
+        jql: `project=${projectNameOrId}${statusJql}${userJql} and hierarchyLevel=0`,
       });
     } catch (error) {
       vscode.window.showErrorMessage("Get issues fail,Pleace try again!");
