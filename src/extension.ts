@@ -14,7 +14,14 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "esw-sup-jira" is now active!');
 
-  const loginStatus = context.globalState.get("loginStatus") as string;
+  try {
+    const loginStatus = context.globalState.get<string>("loginStatus") || "";
+    jiraConnector.getCache(loginStatus);
+  } catch (error) {
+    vscode.window.showWarningMessage(
+      "No login status found, please login first."
+    );
+  }
 
   const projectsView = vscode.window.registerTreeDataProvider(
     "jira-projects",
