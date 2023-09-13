@@ -13,10 +13,14 @@ export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "esw-sup-jira" is now active!');
-
+  let loginStatus: { url: string; email: string; apiToken: string } = {
+    url: "",
+    email: "",
+    apiToken: "",
+  };
   try {
-    const loginStatus = context.globalState.get<string>("loginStatus") || "";
-    jiraConnector.getCache(loginStatus);
+    const loginStatusStr = context.globalState.get<string>("loginStatus") || "";
+    loginStatus = JSON.parse(loginStatusStr);
   } catch (error) {
     vscode.window.showWarningMessage(
       "No login status found, please login first."
@@ -35,9 +39,9 @@ export function activate(context: vscode.ExtensionContext) {
   // Register Commands
   context.subscriptions.push(
     vscode.commands.registerCommand("esw-sup-jira.login", async () => {
-      await jiraConnector.jiraConfig();
+      await jiraConnector.jiraConfig(loginStatus);
       jiraTreeProvider.refresh();
-      jiraConnector.setCache(context);
+      jiraConnector.getLoginStatusFromCache(context);
     })
   );
   context.subscriptions.push(
