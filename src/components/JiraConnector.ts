@@ -100,7 +100,7 @@ class JiraConnector {
    * represents the context in which the extension is running. It provides access to various
    * extension-related functionalities and resources.
    */
-  getLoginStatusFromCache(context: vscode.ExtensionContext) {
+  setLoginStatusToCache(context: vscode.ExtensionContext) {
     const loginStatus = {
       url: this.baseUrl,
       email: this.email,
