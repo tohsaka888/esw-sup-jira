@@ -2,6 +2,11 @@
   "name": "esw-sup-jira",
   "displayName": "ESW-SUP-Jira",
   "description": "Auto generate jira commit message for Bitech ESW developers.",
+  "publisher": "ESW-sdd1whu & ESW-wsy1whu",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tohsaka888/esw-sup-jira.git"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.82.0"
