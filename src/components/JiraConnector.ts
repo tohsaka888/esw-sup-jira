@@ -8,6 +8,9 @@ import {
 class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
+  private baseUrl?: string;
+  private email?: string;
+  private apiToken?: string;
 
   private constructor() {}
 
@@ -37,33 +40,43 @@ class JiraConnector {
     });
   }
   // 创建Jira连接器
-  async jiraConfig() {
+  async jiraConfig(loginStatus: {
+    url?: string;
+    email?: string;
+    apiToken?: string;
+  }) {
     // The code you place here will be executed every time your command is executed
     // Display a message box to the user
-    const baseUrl = await vscode.window.showInputBox({
-      placeHolder: "Please enter your Jira Site Url",
-      value: "",
-      ignoreFocusOut: true,
-    });
-    const email = await vscode.window.showInputBox({
-      placeHolder: "Please enter your Jira bind email",
-      value: "",
-      ignoreFocusOut: true,
-    });
-    const apiToken = await vscode.window.showInputBox({
-      placeHolder: "Please enter your Jira api token",
-      value: "",
-      password: true,
-      ignoreFocusOut: true,
-    });
+    this.baseUrl =
+      loginStatus.url ||
+      (await vscode.window.showInputBox({
+        placeHolder: "Please enter your Jira Site Url",
+        value: "",
+        ignoreFocusOut: true,
+      }));
+    this.email =
+      loginStatus.email ||
+      (await vscode.window.showInputBox({
+        placeHolder: "Please enter your Jira bind email",
+        value: "",
+        ignoreFocusOut: true,
+      }));
+    this.apiToken =
+      loginStatus.apiToken ||
+      (await vscode.window.showInputBox({
+        placeHolder: "Please enter your Jira api token",
+        value: "",
+        password: true,
+        ignoreFocusOut: true,
+      }));
     try {
-      if (email && apiToken && baseUrl) {
+      if (this.email && this.apiToken && this.baseUrl) {
         JiraConnector.client = new Version3Client({
-          host: baseUrl,
+          host: this.baseUrl,
           authentication: {
             basic: {
-              email,
-              apiToken,
+              email: this.email,
+              apiToken: this.apiToken,
             },
           },
         });
@@ -87,19 +100,14 @@ class JiraConnector {
    * represents the context in which the extension is running. It provides access to various
    * extension-related functionalities and resources.
    */
-  setCache(context: vscode.ExtensionContext) {
-    const cache = JSON.stringify(JiraConnector.client);
+  getLoginStatusFromCache(context: vscode.ExtensionContext) {
+    const loginStatus = {
+      url: this.baseUrl,
+      email: this.email,
+      apiToken: this.apiToken,
+    };
+    const cache = JSON.stringify(loginStatus);
     context.globalState.update("loginStatus", cache);
-  }
-
-  /**
-   * The function `getCache` takes a string parameter `cache`, parses it into a JSON object, and assigns
-   * it to the `client` property of the `JiraConnector` class.
-   * @param {string} cache - The `cache` parameter is a string that represents the cached data.
-   */
-  getCache(cache: string) {
-    const clientCache = JSON.parse(cache);
-    JiraConnector.client = clientCache;
   }
 
   /**
