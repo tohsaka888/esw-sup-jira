@@ -59,6 +59,21 @@
           "light": "resources/icons/light/filter.png",
           "dark": "resources/icons/dark/filter.png"
         }
+      },
+      {
+        "command": "esw-sup-jira.copy-issue-key",
+        "title": "Copy issue key",
+        "category": "project"
+      },
+      {
+        "command": "esw-sup-jira.copy-issue-key-and-name",
+        "title": "Copy issue key and name",
+        "category": "project"
+      },
+      {
+        "command": "esw-sup-jira.checkout",
+        "title": "Start process this issue",
+        "category": "project"
       }
     ],
     "menus": {
@@ -74,6 +89,18 @@
           "command": "esw-sup-jira.project.filter",
           "when": "view == jira-projects && viewItem == project",
           "group": "inline"
+        },
+        {
+          "command": "esw-sup-jira.copy-issue-key",
+          "when": "view == jira-projects && viewItem == issue"
+        },
+        {
+          "command": "esw-sup-jira.copy-issue-key-and-name",
+          "when": "view == jira-projects && viewItem == issue"
+        },
+        {
+          "command": "esw-sup-jira.checkout",
+          "when": "view == jira-projects && viewItem == issue"
         }
       ]
     }
@@ -95,6 +122,7 @@
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
+    "@types/shelljs": "^0.8.12",
     "@types/vscode": "1.82.0",
     "@vscode/test-electron": "2.3.4",
     "autoprefixer": "10.4.15",
@@ -112,6 +140,7 @@
     "chai": "^4.3.8",
     "jira.js": "2.19.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "shelljs": "^0.8.5"
   }
 }

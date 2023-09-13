@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import { JiraTreeItem, jiraTreeProvider } from "./components/SideMenu";
 import { jiraConnector } from "./components/JiraConnector";
 import { projectFilter } from "./components/ProjectFilter";
+import shell from "shelljs";
 // import { jiraPanel } from "./components/WebviewPanel";
 
 // This method is called when your extension is activated
@@ -35,14 +36,47 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(
     vscode.commands.registerCommand(
+      "esw-sup-jira.copy-issue-key",
+      (props: JiraTreeItem) => {
+        vscode.env.clipboard.writeText(props._id.toString());
+      }
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "esw-sup-jira.copy-issue-key-and-name",
+      (props: JiraTreeItem) => {
+        vscode.env.clipboard.writeText(props.label);
+      }
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "esw-sup-jira.checkout",
+      (props: JiraTreeItem) => {
+        shell.exec(
+          `git checkout ${props._id}`,
+          { async: true },
+          (code, stdout, stderr) => {
+            if (!code) {
+              vscode.window.showInformationMessage(stdout);
+            } else {
+              vscode.window.showErrorMessage(JSON.stringify(stderr));
+            }
+          }
+        );
+      }
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
       "esw-sup-jira.project.filter",
       async (props: JiraTreeItem) => {
-        vscode.window.showWarningMessage(JSON.stringify(props));
         const result = await projectFilter.projectFilterSelector(
           props._id.toString()
         );
-        props._status = result?.status;
-        vscode.window.showWarningMessage(props._status || "");
+        props._status = result.status;
+        props._assignee = result.assignee;
         jiraTreeProvider.refresh(props);
       }
     )

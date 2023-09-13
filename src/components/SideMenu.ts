@@ -63,14 +63,12 @@ class JiraTreeProvider implements vscode.TreeDataProvider<JiraTreeItem> {
 
   async getChildren(element?: JiraTreeItem): Promise<JiraTreeItem[]> {
     if (element) {
-      if (element.label === "ESW-SUP") {
-        vscode.window.showWarningMessage(`${element._status}`);
-      }
       // 如果有父节点，则异步获取其子节点
       if (element.type === "project") {
         const response = await jiraConnector.getProjectIssues({
           projectNameOrId: element._id.toString(),
           status: element._status,
+          assigneeFullNameOrId: element._assignee,
         });
         return Promise.resolve(
           response?.issues?.map(
