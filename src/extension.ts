@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "esw-sup-jira" is now active!');
+  
   const projectsView = vscode.window.registerTreeDataProvider(
     "jira-projects",
     jiraTreeProvider
@@ -54,12 +55,14 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(
       "esw-sup-jira.checkout",
       (props: JiraTreeItem) => {
+        const folders = vscode.workspace.workspaceFolders;
+        shell.cd(folders ? folders[0].uri.fsPath : "~");
         shell.exec(
-          `git checkout ${props._id}`,
+          `git checkout -b ${props._id}`,
           { async: true },
           (code, stdout, stderr) => {
             if (!code) {
-              vscode.window.showInformationMessage(stdout);
+              vscode.window.showInformationMessage(`Checkout to ${props._id}`);
             } else {
               vscode.window.showErrorMessage(JSON.stringify(stderr));
             }
