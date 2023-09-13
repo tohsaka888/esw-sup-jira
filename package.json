@@ -27,10 +27,6 @@
           "id": "jira-projects",
           "name": "Projects",
           "contextualTitle": "jira-projects"
-        },
-        {
-          "id": "jira-my",
-          "name": "My"
         }
       ]
     },
@@ -113,7 +109,8 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p -w . --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile",
-    "test": "node out/src/test/runTest.js --delay"
+    "test": "node out/src/test/runTest.js --delay",
+    "compile:package": "npx vsce package"
   },
   "devDependencies": {
     "@types/chai": "^4.3.6",

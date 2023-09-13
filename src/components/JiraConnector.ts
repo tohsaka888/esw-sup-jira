@@ -40,35 +40,35 @@ class JiraConnector {
     });
   }
   // 创建Jira连接器
-  async jiraConfig(loginStatus: {
-    url?: string;
-    email?: string;
-    apiToken?: string;
+  async jiraConfig(loginStatus?: {
+    url: string;
+    email: string;
+    apiToken: string;
   }) {
     // The code you place here will be executed every time your command is executed
     // Display a message box to the user
-    this.baseUrl =
-      loginStatus.url ||
-      (await vscode.window.showInputBox({
-        placeHolder: "Please enter your Jira Site Url",
-        value: "",
-        ignoreFocusOut: true,
-      }));
-    this.email =
-      loginStatus.email ||
-      (await vscode.window.showInputBox({
-        placeHolder: "Please enter your Jira bind email",
-        value: "",
-        ignoreFocusOut: true,
-      }));
-    this.apiToken =
-      loginStatus.apiToken ||
-      (await vscode.window.showInputBox({
-        placeHolder: "Please enter your Jira api token",
-        value: "",
-        password: true,
-        ignoreFocusOut: true,
-      }));
+    // if (!loginStatus) {
+    this.baseUrl = await vscode.window.showInputBox({
+      placeHolder: "Please enter your Jira Site Url",
+      value: "",
+      ignoreFocusOut: true,
+    });
+    this.email = await vscode.window.showInputBox({
+      placeHolder: "Please enter your Jira bind email",
+      value: "",
+      ignoreFocusOut: true,
+    });
+    this.apiToken = await vscode.window.showInputBox({
+      placeHolder: "Please enter your Jira api token",
+      value: "",
+      password: true,
+      ignoreFocusOut: true,
+    });
+    // } else {
+    //   this.baseUrl = loginStatus.url;
+    //   this.email = loginStatus.email;
+    //   this.apiToken = loginStatus.apiToken;
+    // }
     try {
       if (this.email && this.apiToken && this.baseUrl) {
         JiraConnector.client = new Version3Client({
