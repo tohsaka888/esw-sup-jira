@@ -9,7 +9,7 @@ class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -56,25 +56,40 @@ class JiraConnector {
       password: true,
       ignoreFocusOut: true,
     });
-    if (email && apiToken && baseUrl) {
-      JiraConnector.client = new Version3Client({
-        host: baseUrl,
-        authentication: {
-          basic: {
-            email,
-            apiToken,
+    try {
+      if (email && apiToken && baseUrl) {
+        JiraConnector.client = new Version3Client({
+          host: baseUrl,
+          authentication: {
+            basic: {
+              email,
+              apiToken,
+            },
           },
-        },
-      });
-      const loginStatus = await this.loginAuthenticated();
-      if (loginStatus) {
-        vscode.window.showInformationMessage("Login successfully!");
+        });
+        const loginStatus = await this.loginAuthenticated();
+        if (loginStatus) {
+          vscode.window.showInformationMessage("Login successfully!");
+        } else {
+          vscode.window.showErrorMessage("Login failed!");
+        }
       } else {
-        vscode.window.showErrorMessage("Login failed!");
+        vscode.window.showErrorMessage("Please input a valid value!");
       }
-    } else {
-      vscode.window.showErrorMessage("Please input a valid value!");
+    } catch (error) {
+      vscode.window.showErrorMessage("Login failed!");
     }
+  }
+
+  /**
+   * The function sets the Jira client cache in the global state of the VS Code extension context.
+   * @param context - The `context` parameter is an instance of `vscode.ExtensionContext` which
+   * represents the context in which the extension is running. It provides access to various
+   * extension-related functionalities and resources.
+   */
+  setCache(context: vscode.ExtensionContext) {
+    const cache = JSON.stringify(JiraConnector.client);
+    context.globalState.update("ESW-Jira-Cache", cache);
   }
 
   /**
@@ -123,21 +138,28 @@ class JiraConnector {
     }
   }
 
-
-
-
-/**
- * The function `getProjectIssues` retrieves issues from Jira based on the project name or ID and an
- * optional status.
- * @param  - - `projectNameOrId`: The name or ID of the project for which you want to retrieve issues.
- * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
- * is a Promise that resolves to the search results for issues in the specified project and with the
- * specified status.
- */
-  async getProjectIssues({ projectNameOrId, status ,assigneeFullNameOrId}: { projectNameOrId: string, status?: string ,assigneeFullNameOrId?:string}) {
+  /**
+   * The function `getProjectIssues` retrieves issues from Jira based on the project name or ID and an
+   * optional status.
+   * @param  - - `projectNameOrId`: The name or ID of the project for which you want to retrieve issues.
+   * @returns the result of the JiraConnector.client?.issueSearch.searchForIssuesUsingJql() method, which
+   * is a Promise that resolves to the search results for issues in the specified project and with the
+   * specified status.
+   */
+  async getProjectIssues({
+    projectNameOrId,
+    status,
+    assigneeFullNameOrId,
+  }: {
+    projectNameOrId: string;
+    status?: string;
+    assigneeFullNameOrId?: string;
+  }) {
     try {
       const statusJql = status ? ` and status=${status}` : "";
-      const assigneeJql = assigneeFullNameOrId ? ` and assignee=${assigneeFullNameOrId}` : "";
+      const assigneeJql = assigneeFullNameOrId
+        ? ` and assignee=${assigneeFullNameOrId}`
+        : "";
       return await JiraConnector.client?.issueSearch.searchForIssuesUsingJql({
         jql: `project=${projectNameOrId}${statusJql}${assigneeJql} and hierarchyLevel=0`,
       });
