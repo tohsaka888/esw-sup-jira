@@ -92,15 +92,15 @@
         },
         {
           "command": "esw-sup-jira.copy-issue-key",
-          "when": "view == jira-projects && viewItem == issue"
+          "when": "view == jira-projects && (viewItem == issue || viewItem == subtask)"
         },
         {
           "command": "esw-sup-jira.copy-issue-key-and-name",
-          "when": "view == jira-projects && viewItem == issue"
+          "when": "view == jira-projects && (viewItem == issue || viewItem == subtask)"
         },
         {
           "command": "esw-sup-jira.checkout",
-          "when": "view == jira-projects && viewItem == issue"
+          "when": "view == jira-projects && (viewItem == issue || viewItem == subtask)"
         }
       ]
     }
