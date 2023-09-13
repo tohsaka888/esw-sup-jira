@@ -9,7 +9,7 @@ class JiraConnector {
   private static instance: JiraConnector | null = null;
   private static client?: Version3Client | null = null;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): JiraConnector {
     if (!JiraConnector.instance) {
@@ -89,7 +89,17 @@ class JiraConnector {
    */
   setCache(context: vscode.ExtensionContext) {
     const cache = JSON.stringify(JiraConnector.client);
-    context.globalState.update("ESW-Jira-Cache", cache);
+    context.globalState.update("loginStatus", cache);
+  }
+
+  /**
+   * The function `getCache` takes a string parameter `cache`, parses it into a JSON object, and assigns
+   * it to the `client` property of the `JiraConnector` class.
+   * @param {string} cache - The `cache` parameter is a string that represents the cached data.
+   */
+  getCache(cache: string) {
+    const clientCache = JSON.parse(cache);
+    JiraConnector.client = clientCache;
   }
 
   /**
