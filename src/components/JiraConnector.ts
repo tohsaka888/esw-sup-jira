@@ -47,28 +47,28 @@ class JiraConnector {
   }) {
     // The code you place here will be executed every time your command is executed
     // Display a message box to the user
-    // if (!loginStatus) {
-    this.baseUrl = await vscode.window.showInputBox({
-      placeHolder: "Please enter your Jira Site Url",
-      value: "",
-      ignoreFocusOut: true,
-    });
-    this.email = await vscode.window.showInputBox({
-      placeHolder: "Please enter your Jira bind email",
-      value: "",
-      ignoreFocusOut: true,
-    });
-    this.apiToken = await vscode.window.showInputBox({
-      placeHolder: "Please enter your Jira api token",
-      value: "",
-      password: true,
-      ignoreFocusOut: true,
-    });
-    // } else {
-    //   this.baseUrl = loginStatus.url;
-    //   this.email = loginStatus.email;
-    //   this.apiToken = loginStatus.apiToken;
-    // }
+    if (!loginStatus) {
+      this.baseUrl = await vscode.window.showInputBox({
+        placeHolder: "Please enter your Jira Site Url",
+        value: "",
+        ignoreFocusOut: true,
+      });
+      this.email = await vscode.window.showInputBox({
+        placeHolder: "Please enter your Jira bind email",
+        value: "",
+        ignoreFocusOut: true,
+      });
+      this.apiToken = await vscode.window.showInputBox({
+        placeHolder: "Please enter your Jira api token",
+        value: "",
+        password: true,
+        ignoreFocusOut: true,
+      });
+    } else {
+      this.baseUrl = loginStatus.url;
+      this.email = loginStatus.email;
+      this.apiToken = loginStatus.apiToken;
+    }
     try {
       if (this.email && this.apiToken && this.baseUrl) {
         JiraConnector.client = new Version3Client({
